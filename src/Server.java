@@ -7,7 +7,7 @@ public class Server{
 	private static Socket socket;
 	private static ServerSocket serverSocket; 
 	private static int port = 25000;
-	
+
 	private static int table[][];
 	private static byte[] key;
 	
@@ -18,31 +18,30 @@ public class Server{
 	public static void main(String[] args){
 		
 		try{
-			
 			serverSocket = new ServerSocket(port);
 			System.out.println("Server Online");
 			while(true){
-				
-				//Reading the message from the client
 				socket = serverSocket.accept();
 							
 				DataInputStream din = new DataInputStream(socket.getInputStream());
 				
 				int indexes[] = null;
+
 				int length = din.readInt();                 
 				if(length > 0) {
 					indexes = new int[length];
 					for (int i = 0; i < indexes.length; ++i) {
 						indexes[i] = din.readInt();
 					}
-						
+
 				}
-								
+
 				length = din.readInt();
 				if(length > 0) {
 					key = new byte[length];
-				    din.readFully(key, 0, key.length); 
+					din.readFully(key, 0, key.length); 
 				}
+
 				//System.out.println(key);
 				
 				encryptedData = null;
@@ -56,7 +55,6 @@ public class Server{
 				xorData = XorDataNKey.XorDataWithKeyAtIndex(encryptedData, key, indexes);
 				decryptedData = XorDataNKey.XorDataWithKey(xorData, key);
 				System.out.println(decryptedData);
-				
 			}
 		}
 		catch (Exception e){

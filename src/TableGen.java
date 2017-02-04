@@ -18,28 +18,16 @@ public class TableGen {
 		int Low = 0;
 		int High = 10;
 
-		// Generate Random matrix.
+		//Generate Random Table.
 		for (int i = 0; i < 16; i++) {
 			for (int j = 0; j < 16; j++) {
 
 				int Result = r.nextInt(High - Low) + Low;
 				matrix[i][j] = Result;
-				//System.out.print(matrix[i][j] + "\t");
 			}
-			//System.out.println();
 		}
 
-		// Print matrix
-		/*
-		for (int i = 0; i < 16; i++) {
-			for (int j = 0; j < 16; j++) {
-				System.out.print(matrix[i][j] + "\t");
-			}
-			System.out.println();
-		}
-		*/
-		
-		// Combining 2 elements of matrix.
+		//Getting indexes
 		int indexes[] = new int[128];
 		int k = 0;
 		for (int i = 0; i < 16; i++) {
@@ -48,13 +36,6 @@ public class TableGen {
 				k++;
 			}
 		}
-		
-		//System.out.println();
-		/*
-		for (int i = 0; i < 128; i++)
-			System.out.print(indexes[i] + " ");
-		*/
-		
 		return indexes;
 	}
 }

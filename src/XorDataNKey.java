@@ -1,6 +1,7 @@
 public class XorDataNKey {
 	
 	public static byte[] XorDataWithKey(String data,byte[] key) {
+
 	    byte[] byteData = data.getBytes();
 	    byte[] xorData = new byte[byteData.length];
 	    
@@ -18,11 +19,10 @@ public class XorDataNKey {
 	    return new String(byteData);
 	}
 	
-	
 	public static byte[] XorDataWithKeyAtIndex(byte[] xorData,byte[] key,int[] indexes) {
-	    for(int i=0;i<xorData.length;i++ ){
-	    	xorData[i] = (byte)(0xff & ((int)xorData[i]) ^ ((int)key[indexes[i]]));
-	    }
-	    return xorData;
+		for(int i=0;i<xorData.length;i++ ){
+			xorData[i] = (byte)(0xff & ((int)xorData[i]) ^ ((int)key[indexes[i]]));
+		}
+		return xorData;
 	}
 }
