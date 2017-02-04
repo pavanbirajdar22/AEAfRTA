@@ -1,9 +1,12 @@
 import java.io.DataOutputStream;
 import java.net.InetAddress;
 import java.net.Socket;
+import java.util.Scanner;
 
 public class Client {
-	private static Socket socket;	
+	private static Socket socket;
+	private static int port;
+	private static String host;
 	public static byte[] key;
 	public static byte[] xorData;
 	public static String data;
@@ -13,14 +16,20 @@ public class Client {
 	{
 		try
 		{	
-			data = "Hey there! I am using AEAfRTA!";
+			Scanner sc = new Scanner(System.in);
+			System.out.print("Enter message to send - ");
+			data=sc.nextLine();
+			System.out.println("User input - "+data);
+
 			key = KeyGen.generateKey();
 			xorData = XorDataNKey.XorDataWithKey(data,key);
 			indexes = TableGen.getTable();
 			xorData = XorDataNKey.XorDataWithKeyAtIndex(xorData, key,indexes);
 
-			String host = "192.168.1.4";
-			int port = 25000;
+
+			System.out.print("Server IP - ");
+			host = sc.nextLine();
+			port = 25000;
 			InetAddress address = InetAddress.getByName(host);
 			socket = new Socket(address, port);
 
