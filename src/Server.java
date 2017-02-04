@@ -54,7 +54,7 @@ public class Server{
 				
 				xorData = XorDataNKey.XorDataWithKeyAtIndex(encryptedData, key, indexes);
 				decryptedData = XorDataNKey.XorDataWithKey(xorData, key);
-				System.out.println(decryptedData);
+				System.out.println("Message received from user - " + decryptedData);
 			}
 		}
 		catch (Exception e){
