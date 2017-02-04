@@ -1,7 +1,7 @@
 import java.util.Random;
 
 public class KeyGen {
-	public static void main(String[] args) {
+	public static String generateKey(String[] args) {
 		Random r = new Random();
 		int Low = 0;
 		int High = 2;
