@@ -20,15 +20,9 @@ public class Client {
 		{	
 			RSA rsa = new RSA();
 			Scanner sc = new Scanner(System.in);
-			System.out.print("Enter message to send - ");
-			data=sc.nextLine();
-			System.out.println("User input - "+data);
 
 			key = KeyGen.generateKey();
-			xorData = XorDataNKey.XorDataWithKey(data,key);
-			indexes = TableGen.getTable();
-			xorData = XorDataNKey.XorDataWithKeyAtIndex(xorData, key,indexes);
-
+			indexes = TableGen.getTable();			
 
 			System.out.print("Server IP - ");
 			host = sc.nextLine();
@@ -60,14 +54,25 @@ public class Client {
 			for (int e : indexes) dOut.writeInt(e);
 			dOut.flush();
 			System.out.println("Step 2: Indexes sent to the server");
-
-			//Send encrypted Data
-			
-			dOut.writeInt(xorData.length); // write length of the message
-			dOut.write(xorData);
-			dOut.flush();
-			System.out.println("Step 3: Encrypted data sent");
-
+			System.out.println();
+			while(true){
+				System.out.print("Enter message to send - ");
+				data=sc.nextLine();
+				if(data.equalsIgnoreCase("exit")){
+					dOut.writeInt(-1);
+					dOut.flush();
+					System.out.println("Session over");
+					break;
+				}
+				//System.out.println("User input - "+data);
+				//Send encrypted Data
+				xorData = XorDataNKey.XorDataWithKey(data,key);
+				xorData = XorDataNKey.XorDataWithKeyAtIndex(xorData,key,indexes);
+				dOut.writeInt(xorData.length); // write length of the message
+				dOut.write(xorData);
+				dOut.flush();
+				System.out.println("Encrypted data sent");
+			}
 		}
 		catch (Exception exception)
 		{
