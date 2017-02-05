@@ -1,6 +1,8 @@
 import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.security.PublicKey;
 
 public class Server{
 
@@ -18,32 +20,53 @@ public class Server{
 	public static void main(String[] args){
 		
 		try{
+			
+			RSA rsa = new RSA();
+			byte[] publicKey = rsa.getPublicKey();
+			//System.out.println(publicKey);
+			
 			serverSocket = new ServerSocket(port);
 			System.out.println("Server Online");
 			while(true){
+				
 				socket = serverSocket.accept();
-							
+				
+				//Send Public Key
+				
+				DataOutputStream dOut = new DataOutputStream(socket.getOutputStream());
+				dOut.writeInt(publicKey.length);
+				dOut.write(publicKey);
+				dOut.flush();
+				System.out.println("Step 1: Public Key sent");
+								
+				//Get encrypted key
+				
 				DataInputStream din = new DataInputStream(socket.getInputStream());
+				int length = din.readInt();
+				byte[] encryptedKey = null;
+				if(length > 0) {
+					encryptedKey = new byte[length];
+					din.readFully(encryptedKey, 0, encryptedKey.length); 
+				}
+				System.out.println("Step 2: Key received");
+				
+				//Decrypt session key
+				
+				key = rsa.decrypt(encryptedKey);				
+				
+				//Get indexes
 				
 				int indexes[] = null;
-
-				int length = din.readInt();                 
+				length = din.readInt();                 
 				if(length > 0) {
 					indexes = new int[length];
 					for (int i = 0; i < indexes.length; ++i) {
 						indexes[i] = din.readInt();
 					}
-
-				}
-
-				length = din.readInt();
-				if(length > 0) {
-					key = new byte[length];
-					din.readFully(key, 0, key.length); 
 				}
 
 				//System.out.println(key);
-				
+	
 				encryptedData = null;
 				length = din.readInt();
 				if(length > 0) {
@@ -54,7 +77,8 @@ public class Server{
 				
 				xorData = XorDataNKey.XorDataWithKeyAtIndex(encryptedData, key, indexes);
 				decryptedData = XorDataNKey.XorDataWithKey(xorData, key);
-				System.out.println("Message received from user - " + decryptedData);
+				System.out.println("Step 3 : Message received from user - " + decryptedData);
+			
 			}
 		}
 		catch (Exception e){

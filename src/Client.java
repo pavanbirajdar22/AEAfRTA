@@ -1,3 +1,4 @@
+import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.net.InetAddress;
 import java.net.Socket;
@@ -11,11 +12,13 @@ public class Client {
 	public static byte[] xorData;
 	public static String data;
 	public static int[] indexes;
-
+	public static byte[] publicKey;
+	
 	public static void main(String args[])
 	{
 		try
 		{	
+			RSA rsa = new RSA();
 			Scanner sc = new Scanner(System.in);
 			System.out.print("Enter message to send - ");
 			data=sc.nextLine();
@@ -33,24 +36,37 @@ public class Client {
 			InetAddress address = InetAddress.getByName(host);
 			socket = new Socket(address, port);
 
-			//Table
+			//Get Public Key
+			
+			DataInputStream din = new DataInputStream(socket.getInputStream());
+			int length = din.readInt();                 
+			if(length > 0) {
+				publicKey = new byte[length];
+				din.readFully(publicKey, 0, publicKey.length);
+			}
+			
+			//Encryption of symmetric key using public serverKey
+			
 			DataOutputStream dOut = new DataOutputStream(socket.getOutputStream());
+			byte[] encryptedKey = rsa.encrypt(key, RSA.convertBytesToPublicKey(publicKey));
+			dOut.writeInt(encryptedKey.length);
+			dOut.write(encryptedKey);
+			dOut.flush();
+			System.out.println("Step 1: Encrypted key sent to the server");
+
+			//Send Table Indexes
+			
 			dOut.writeInt(indexes.length);
 			for (int e : indexes) dOut.writeInt(e);
 			dOut.flush();
-			System.out.println("Indexes sent to the server");
+			System.out.println("Step 2: Indexes sent to the server");
 
-			//Key
-			dOut.writeInt(key.length); // write length of the message
-			dOut.write(key);
-			dOut.flush();
-			System.out.println("Key sent to the server");
-
-			//Data
+			//Send encrypted Data
+			
 			dOut.writeInt(xorData.length); // write length of the message
 			dOut.write(xorData);
 			dOut.flush();
-			System.out.println("Encrypted data sent");
+			System.out.println("Step 3: Encrypted data sent");
 
 		}
 		catch (Exception exception)

@@ -1,12 +1,12 @@
+import java.security.KeyFactory;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.PublicKey;
+import java.security.spec.EncodedKeySpec;
+import java.security.spec.X509EncodedKeySpec;
 import java.security.PrivateKey;
-
+import java.util.Base64; 
 import javax.crypto.Cipher;
-
-import sun.misc.BASE64Decoder;
-import sun.misc.BASE64Encoder;
 
 public class RSA
 {
@@ -20,43 +20,40 @@ public class RSA
 	public void Initialize() throws Exception
 	{
 		KeyPairGenerator keygen = KeyPairGenerator.getInstance("RSA");
-		keygen.initialize(512);
+		keygen.initialize(2048);
 		keyPair = keygen.generateKeyPair();
 	}
 
-	public String encrypt(String plaintext, PublicKey key)  throws Exception
+	public byte[] getPublicKey(){
+		return keyPair.getPublic().getEncoded();
+	}
+	
+	public static PublicKey convertBytesToPublicKey(byte[] publicKey) throws Exception{
+		
+		KeyFactory keyFactory = KeyFactory.getInstance("RSA");	    
+	    EncodedKeySpec publicKeySpec = new X509EncodedKeySpec(publicKey);
+	    return keyFactory.generatePublic(publicKeySpec);
+	}
+	
+	public byte[] encrypt(byte[] plaintext, PublicKey key)  throws Exception
 	{
 		Cipher cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding");
-
 		cipher.init(Cipher.ENCRYPT_MODE, key);
-
-		byte[] ciphertext = cipher.doFinal(plaintext.getBytes("UTF8"));
-		return encodeBASE64(ciphertext);
+		return Base64.getEncoder().encode(cipher.doFinal(plaintext));
 	}
 
-	public String decrypt(String ciphertext)  throws Exception
+	public byte[] decrypt(byte[] ciphertext)  throws Exception
 	{
 		PrivateKey key = keyPair.getPrivate();
 		Cipher cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding");
 
 		cipher.init(Cipher.DECRYPT_MODE, key);
 
-		byte[] plaintext = cipher.doFinal(decodeBASE64(ciphertext));
-		return new String(plaintext, "UTF8");
+		return cipher.doFinal(Base64.getDecoder().decode(ciphertext));
 	}
 
-    private static String encodeBASE64(byte[] bytes)
-    {
-        BASE64Encoder b64 = new BASE64Encoder();
-        return b64.encode(bytes);
-    }
-
-    private static byte[] decodeBASE64(String text) throws Exception
-    {
-        BASE64Decoder b64 = new BASE64Decoder();
-        return b64.decodeBuffer(text);
-    }
-	/*public static void main(String[] args) throws Exception{
+	/*
+	public static void main(String[] args) throws Exception{
 		RSA app = new RSA();
 
 		System.out.println("Enter a line: ");
@@ -65,9 +62,9 @@ public class RSA
 		String input = breader.readLine();
 
 		System.out.println("Plaintext = " + input);
-
-		String ciphertext = app.encrypt(input);
-		System.out.println("After Encryption Ciphertext = " + ciphertext);
-		System.out.println("After Decryption Plaintext = " + app.decrypt(ciphertext));
+		
+		byte[] ciphertext = app.encrypt(input.getBytes(), convertBytesToPublicKey(app.getPublicKey()));
+		System.out.println("After Encryption Ciphertext = " + new String(ciphertext));
+		System.out.println("After Decryption Plaintext = " + new String(app.decrypt(new String(ciphertext))));
 	}*/
 }
