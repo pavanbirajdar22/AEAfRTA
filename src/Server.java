@@ -1,5 +1,6 @@
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
+import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 
@@ -25,6 +26,13 @@ public class Server{
 			//System.out.println(publicKey);
 			
 			serverSocket = new ServerSocket(port);
+			
+			/*
+			InetAddress ip;
+			ip = InetAddress.getLocalHost();
+			System.out.println("Current IP address : " + ip.getHostAddress());
+			*/
+			
 			System.out.println("Server Online");
 			
 			socket = serverSocket.accept();
@@ -64,6 +72,11 @@ public class Server{
 						indexes[i] = din.readInt();
 					}
 				}
+				else{
+					System.out.println("Session over");
+					break;
+				}
+				
 				System.out.println();
 				
 				// Get encrypted data
@@ -74,10 +87,6 @@ public class Server{
 				if(length > 0) {
 					encryptedData = new byte[length];
 				    din.readFully(encryptedData, 0, encryptedData.length); 
-				}
-				else{
-					System.out.println("Session over");
-					break;
 				}
 				
 				//System.out.println(encryptedData);

@@ -75,6 +75,7 @@ public class TableGen {
 				k++;
 			}
 		}
+		
 		return indexes;
 	}
 }

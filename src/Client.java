@@ -51,12 +51,14 @@ public class Client {
 			System.out.println("Step 1: Encrypted key sent to the server");
 
 			System.out.println();
+			
 			while(true){
 				
 				// Get message from user
 				
 				System.out.print("Enter message to send - ");
 				data=sc.nextLine();
+				
 				if(data.equalsIgnoreCase("exit")){
 					dOut.writeInt(-1);
 					dOut.flush();
