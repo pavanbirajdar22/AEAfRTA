@@ -52,19 +52,21 @@ public class Server{
 			
 			key = rsa.decrypt(encryptedKey);				
 			
-			//Get indexes
-			
-			int indexes[] = null;
-			length = din.readInt();                 
-			if(length > 0) {
-				indexes = new int[length];
-				for (int i = 0; i < indexes.length; ++i) {
-					indexes[i] = din.readInt();
-				}
-			}
-			System.out.println();
 			while(true){
-				//System.out.println(key);
+				
+				// Get indexes
+				
+				int indexes[] = null;
+				length = din.readInt();                 
+				if(length > 0) {
+					indexes = new int[length];
+					for (int i = 0; i < indexes.length; ++i) {
+						indexes[i] = din.readInt();
+					}
+				}
+				System.out.println();
+				
+				// Get encrypted data
 				
 				encryptedData = null;
 				length = din.readInt();

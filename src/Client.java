@@ -13,16 +13,13 @@ public class Client {
 	public static String data;
 	public static int[] indexes;
 	public static byte[] publicKey;
+	public static int[][] table;
 	
-	public static void main(String args[])
-	{
+	public static void main(String args[]) {
 		try
 		{	
 			RSA rsa = new RSA();
-			Scanner sc = new Scanner(System.in);
-
-			key = KeyGen.generateKey();
-			indexes = TableGen.getTable();			
+			Scanner sc = new Scanner(System.in);			
 
 			System.out.print("Server IP - ");
 			host = sc.nextLine();
@@ -39,6 +36,11 @@ public class Client {
 				din.readFully(publicKey, 0, publicKey.length);
 			}
 			
+			// Generate session key and table
+			
+			key = KeyGen.generateKey();
+			table = TableGen.getTable();
+			
 			//Encryption of symmetric key using public serverKey
 			
 			DataOutputStream dOut = new DataOutputStream(socket.getOutputStream());
@@ -48,14 +50,11 @@ public class Client {
 			dOut.flush();
 			System.out.println("Step 1: Encrypted key sent to the server");
 
-			//Send Table Indexes
-			
-			dOut.writeInt(indexes.length);
-			for (int e : indexes) dOut.writeInt(e);
-			dOut.flush();
-			System.out.println("Step 2: Indexes sent to the server");
 			System.out.println();
 			while(true){
+				
+				// Get message from user
+				
 				System.out.print("Enter message to send - ");
 				data=sc.nextLine();
 				if(data.equalsIgnoreCase("exit")){
@@ -64,29 +63,36 @@ public class Client {
 					System.out.println("Session over");
 					break;
 				}
-				//System.out.println("User input - "+data);
+				
+				// Send indexes
+				
+				indexes = TableGen.getIndexes(table);
+				dOut.writeInt(indexes.length);
+				for (int e : indexes) dOut.writeInt(e);
+				dOut.flush();
+				System.out.println("Step 2: Indexes sent to the server");
+
+				
 				//Send encrypted Data
+				
 				xorData = XorDataNKey.XorDataWithKey(data,key);
 				xorData = XorDataNKey.XorDataWithKeyAtIndex(xorData,key,indexes);
 				dOut.writeInt(xorData.length); // write length of the message
 				dOut.write(xorData);
 				dOut.flush();
 				System.out.println("Encrypted data sent");
+			
 			}
 		}
-		catch (Exception exception)
-		{
+		catch (Exception exception){
 			exception.printStackTrace();
 		}
-		finally
-		{
+		finally{
 			//Closing the socket
-			try
-			{
+			try{
 				socket.close();
 			}
-			catch(Exception e)
-			{
+			catch(Exception e){
 				e.printStackTrace();
 			}
 		}
