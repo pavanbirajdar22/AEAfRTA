@@ -70,8 +70,8 @@ public class TableGen {
 		int indexes[] = new int[128];
 		int k = 0;
 		for (int i = 0; i < 16; i++) {
-			for (int j = 0; j < 16; j += 2) {
-				indexes[k] = matrix[i][j] * 10 + matrix[i][j + 1];
+			for (int j = 0; j < 16; j+=2) {
+				indexes[k] = matrix[i][j]*10 + matrix[i][j+1];
 				k++;
 			}
 		}

@@ -76,9 +76,11 @@ public class Client {
 
 				
 				//Send encrypted Data
-				
+				long startTime = System.nanoTime();
 				xorData = XorDataNKey.XorDataWithKey(data,key);
 				xorData = XorDataNKey.XorDataWithKeyAtIndex(xorData,key,indexes);
+				long endTime = System.nanoTime();
+				System.out.println("Took "+(endTime - startTime) + " ns");
 				dOut.writeInt(xorData.length); // write length of the message
 				dOut.write(xorData);
 				dOut.flush();
