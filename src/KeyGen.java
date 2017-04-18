@@ -6,6 +6,7 @@ public class KeyGen {
 		new Random().nextBytes(b);
 		return b;
 	}
+
 	public static void main(String args[]) {
 		generateKey();
 	}

@@ -2,47 +2,51 @@ import java.util.Random;
 
 public class TableGen {
 
-	public static int[][] columnShiftRight(int count, int[][] array) {
-		
-		while(count > 0) {
-			for(int i = 0; i < 16; i++){
+	public static int[] shiftingKeys = null;
+	public static int[][] matrix = new int[16][16];
+
+	public static void setMatrix(int[][] array) {
+		for (int i = 0; i < 16; i++)
+			for (int j = 0; j < 16; j++)
+				matrix[i][j] = array[i][j];
+	}
+
+	public static void columnShiftRight(int count) {
+		while (count > 0) {
+			for (int i = 0; i < 16; i++) {
 				int m = 16;
-				int temp = array[i][m - 1];
+				int temp = matrix[i][m - 1];
 				for (int k = m - 1; k >= 1; k--) {
-					array[i][k] = array[i][k - 1];
+					matrix[i][k] = matrix[i][k - 1];
 				}
-				array[i][0] = temp;
+				matrix[i][0] = temp;
 			}
 			count--;
 		}
-		return array;
 	}
-	
-	public static int[][] rowShiftDown(int count, int[][] array) {
-		
-		while(count > 0) {
-			for(int i = 0; i < 16; i++){
+
+	public static void rowShiftDown(int count) {
+
+		while (count > 0) {
+			for (int i = 0; i < 16; i++) {
 				int m = 16;
-				int temp = array[m - 1][i];
+				int temp = matrix[m - 1][i];
 				for (int k = m - 1; k >= 1; k--) {
-					array[k][i] = array[k - 1][i];
+					matrix[k][i] = matrix[k - 1][i];
 				}
-				array[0][i] = temp;
+				matrix[0][i] = temp;
 			}
 			count--;
 		}
-		return array;
 	}
-	
 
 	public static int[][] getTable() {
-		int matrix[][] = new int[16][16];
 
 		Random r = new Random();
 		int Low = 0;
 		int High = 10;
 
-		//Generate Random Table.
+		// Generate Random Table.
 		for (int i = 0; i < 16; i++) {
 			for (int j = 0; j < 16; j++) {
 
@@ -52,30 +56,59 @@ public class TableGen {
 		}
 		return matrix;
 	}
-	
-	
-	//Getting indexes
-	public static int[] getIndexes(int matrix[][]){
-		
+
+	public static void setShiftingKeys(String key) {
+		shiftingKeys = new int[key.length()];
+		for (int i = 0; i < key.length(); i++) {
+			shiftingKeys[i] = key.charAt(i) - '0';
+		}
+	}
+
+	public static void generateShiftingKeys() {
 		Random r = new Random();
-		int Low = 0;
-		int High = 10;
-		
-		int Result = r.nextInt(High - Low) + Low;
-		matrix = rowShiftDown(Result, matrix);
-		
-		Result = r.nextInt(High - Low) + Low;
-		matrix = columnShiftRight(Result, matrix);
-		
+		int low = 0;
+		int high = 10;
+		shiftingKeys = new int[6];
+		for (int i = 0; i < 6; i++) {
+			shiftingKeys[i] = r.nextInt(high - low) + low;
+		}
+	}
+
+	public static byte[] getShiftingKeys() {
+		StringBuffer sb = new StringBuffer();
+		for (int i = 0; i < shiftingKeys.length; i++)
+			sb.append(shiftingKeys[i]);
+		return sb.toString().getBytes();
+	}
+
+	// Getting indexes
+	public static int[] getIndexes() {
+
+		for (int i = 0; i < shiftingKeys.length; i++) {
+			if (i % 2 == 0)
+				columnShiftRight(shiftingKeys[i]);
+			else
+				rowShiftDown(shiftingKeys[i]);
+		}
+
 		int indexes[] = new int[128];
 		int k = 0;
 		for (int i = 0; i < 16; i++) {
-			for (int j = 0; j < 16; j+=2) {
-				indexes[k] = matrix[i][j]*10 + matrix[i][j+1];
+			for (int j = 0; j < 16; j += 2) {
+				indexes[k] = matrix[i][j] * 10 + matrix[i][j + 1];
 				k++;
 			}
 		}
-		
 		return indexes;
+	}
+
+	public static void main(String[] args) {
+		generateShiftingKeys();
+		System.out.println(new String(getShiftingKeys()));
+		setShiftingKeys(new String(getShiftingKeys()));
+
+		for (int i = 0; i < shiftingKeys.length; i++)
+			System.out.print(shiftingKeys[i]);
+		// System.out.println(getIndexes(getTable()));
 	}
 }
