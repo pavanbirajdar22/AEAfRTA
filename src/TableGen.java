@@ -99,6 +99,11 @@ public class TableGen {
 				k++;
 			}
 		}
+		
+		for(int i=0; i<shiftingKeys.length; i++){
+			shiftingKeys[i]+=1;
+		}
+		
 		return indexes;
 	}
 

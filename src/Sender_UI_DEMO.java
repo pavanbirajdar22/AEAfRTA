@@ -133,7 +133,7 @@ public class Sender_UI_DEMO {
 							dOut.flush();
 
 							textArea.setText(textArea.getText() + "Sent : " + txtEnterMessage.getText()
-									+ "\nEncrypted as : " + new String(encryptedBlocks) + "\n\n");
+									+ "\n\nEncrypted as : " + new String(encryptedBlocks) + "\n\n");
 							txtEnterMessage.setText("");
 						} else {
 

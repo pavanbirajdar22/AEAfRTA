@@ -140,7 +140,7 @@ public class Receiver_UI_DEMO extends JFrame {
 					}
 
 					System.out.println("Message received from user - " + decryptedBlocks);
-					txtadisplay.setText(txtadisplay.getText() + "Received - " + decryptedBlocks + "\n\n");
+					txtadisplay.setText(txtadisplay.getText() + "\nDecrypted data - " + decryptedBlocks + "\n\n");
 
 				} else if (length > 0) {
 					encryptedData = new byte[length];
@@ -153,7 +153,7 @@ public class Receiver_UI_DEMO extends JFrame {
 					decryptedData = XorDataNKey.XorDataWithKey(xorData, key);
 
 					System.out.println("Message received from user - " + decryptedData);
-					txtadisplay.setText(txtadisplay.getText() + "Received - " + decryptedData + "\n\n");
+					txtadisplay.setText(txtadisplay.getText() + "Decrypted data - " + decryptedData + "\n\n");
 				} else {
 					System.out.println("Session over");
 					txtadisplay.setText(txtadisplay.getText() + "Session over\n\n");

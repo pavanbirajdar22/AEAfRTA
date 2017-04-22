@@ -48,20 +48,4 @@ public class RSA {
 		return cipher.doFinal(Base64.getDecoder().decode(ciphertext));
 	}
 
-	/*
-	 * public static void main(String[] args) throws Exception{ RSA app = new
-	 * RSA();
-	 * 
-	 * System.out.println("Enter a line: "); java.io.InputStreamReader sreader =
-	 * new java.io.InputStreamReader(System.in); java.io.BufferedReader breader
-	 * = new java.io.BufferedReader(sreader); String input = breader.readLine();
-	 * 
-	 * System.out.println("Plaintext = " + input);
-	 * 
-	 * byte[] ciphertext = app.encrypt(input.getBytes(),
-	 * convertBytesToPublicKey(app.getPublicKey()));
-	 * System.out.println("After Encryption Ciphertext = " + new
-	 * String(ciphertext)); System.out.println("After Decryption Plaintext = " +
-	 * new String(app.decrypt(new String(ciphertext)))); }
-	 */
 }
